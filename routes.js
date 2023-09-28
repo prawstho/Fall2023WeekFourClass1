@@ -5,13 +5,22 @@ class MyEmitter extends EventEmitter {};
 // initialize an new emitter object
 const myEmitter = new MyEmitter();
 
-myEmitter.on('route', (route, level, msg) => { 
+// load the logEvents module
+const logEvents = require('./logEvents');
+
+myEmitter.addListener('route', (event, level, msg) => {
     const d = new Date();
-    if(level === 'error')
-        console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * the ' + route + ' ' + msg)
-    else
-        console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + route + '.html, ' + msg)
+    if(DEBUG) console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + msg);
+    logEvents(event, level.toUpperCase() , msg);
 });
+
+// myEmitter.on('route', (route, level, msg) => { 
+//     const d = new Date();
+//     if(level === 'error')
+//         console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * the ' + route + ' ' + msg)
+//     else
+//         console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + route + '.html, ' + msg)
+// });
 
 function indexPage(path, response) {
     myEmitter.emit('route', 'index', 'info', 'the home or root page for the site was visited.' )
@@ -25,6 +34,11 @@ function aboutPage(path, response) {
 
 function contactPage(path, response) {
     myEmitter.emit('route', 'contact', 'info', 'the contact page was visited.' )
+    displayFile(path, response);
+}
+
+function lunchPage(path, response) {
+    myEmitter.emit('route', 'lunch', 'warning', 'the programmer is hungry.' )
     displayFile(path, response);
 }
 
@@ -43,7 +57,7 @@ function displayFile(path, response) {
             console.log(err);
             response.end();
         } else {
-            console.log('file was served.')
+            if(DEBUG) console.log(`${path} file was served.`)
             response.writeHead(response.statusCode, {'Content-Type': 'text/html'});
             response.write(data);
             response.end();
@@ -55,6 +69,7 @@ module.exports = {
     indexPage,
     aboutPage,
     contactPage,
+    lunchPage,
     subscribePage,
     fourOfourPage,
 }

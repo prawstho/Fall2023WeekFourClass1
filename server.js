@@ -1,9 +1,11 @@
 const http = require('http');
-const routes = require('./routes.js');
+const routes = require('./routes');
+
+global.DEBUG = false;
 
 const server = http.createServer((request, response) => {
     let path = "./views/";
-    console.log(request.url, request.method);
+    if(DEBUG) console.log(request.url, request.method);
     switch(request.url) {
         case '/':
             path += "index.html";
@@ -19,6 +21,11 @@ const server = http.createServer((request, response) => {
             path += "contact.html";
             response.statusCode = 200;
             routes.contactPage(path, response);
+            break;
+        case '/lunch':
+            path += "lunch.html";
+            response.statusCode = 200;
+            routes.lunchPage(path, response);
             break;
         case '/subscribe':
             path += "subscribe.html"
