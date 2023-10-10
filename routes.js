@@ -6,21 +6,21 @@ class MyEmitter extends EventEmitter {};
 const myEmitter = new MyEmitter();
 
 // load the logEvents module
-const logEvents = require('./logEvents');
+// const logEvents = require('./logEvents');
 
-myEmitter.addListener('route', (event, level, msg) => {
-    const d = new Date();
-    if(DEBUG) console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + msg);
-    logEvents(event, level.toUpperCase() , msg);
-});
-
-// myEmitter.on('route', (route, level, msg) => { 
+// myEmitter.addListener('route', (event, level, msg) => {
 //     const d = new Date();
-//     if(level === 'error')
-//         console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * the ' + route + ' ' + msg)
-//     else
-//         console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + route + '.html, ' + msg)
+//     if(DEBUG) console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + msg);
+//     logEvents(event, level.toUpperCase() , msg);
 // });
+
+myEmitter.on('route', (route, level, msg) => { 
+    const d = new Date();
+    if(level === 'error')
+        console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * the ' + route + ' ' + msg)
+    else
+        console.log(d.toLocaleString() + ' * ' + level.toUpperCase() + ' * ' + route + '.html, ' + msg)
+});
 
 function indexPage(path, response) {
     myEmitter.emit('route', 'index', 'info', 'the home or root page for the site was visited.' )
